@@ -1,6 +1,8 @@
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@material-ui/icons";
 import React from "react";
+import { useState } from "react";
 import styled from "styled-components";
+import { sliderItems } from "../data";
 
 const Container = styled.div`
     height: 100vh;
@@ -31,7 +33,8 @@ const Arrow = styled.div`
 const Wrapper = styled.div`
     height: 100%;
     display: flex;
-    transform: translateX(0vw); //to move the slider on the x-axis; initially it should be 1st slide so 0vw 
+    transition: all 1.5s ease; //for smooth transitioning between slides
+    transform: translateX(${props=>props.slideIndex * -100}vw); //to move the slider on the x-axis; initially it should be 1st slide so 0vw 
 `
 const Slide = styled.div`
     width: 100vw;
@@ -71,44 +74,34 @@ const Button = styled.button`
 
 const Slider = () => {
 
-    const handleClick = (direction) => {};
+    const [slideIndex, setSlideIndex] = useState(0);
+    const handleClick = (direction) => {
+        if(direction==="left") {
+            setSlideIndex(slideIndex>0 ? slideIndex-1 : 2);
+        }
+        else {
+            setSlideIndex(slideIndex<2 ? slideIndex+1 : 0);
+        }
+    };
 
     return (
         <Container>
             <Arrow direction="left" onClick={()=>handleClick("left")}>
                 <ArrowLeftOutlined/>
             </Arrow>
-            <Wrapper>
-                <Slide bg="f5fafd">
-                    <ImageContainer>
-                        <Image src="https://cdn.pixabay.com/photo/2019/09/22/08/15/woman-4495395_960_720.png" />
-                    </ImageContainer>
-                    <InfoContainer>
-                        <Title>SUMMER SALE</Title>
-                        <Description>SHOP NOW AND SAVE UPTO 30%</Description>
-                        <Button>SHOP</Button>
-                    </InfoContainer>
-                </Slide>
-                <Slide bg="fcf1ed">
-                    <ImageContainer>
-                        <Image src="https://cdn.pixabay.com/photo/2019/09/22/08/15/woman-4495395_960_720.png" />
-                    </ImageContainer>
-                    <InfoContainer>
-                        <Title>SUMMER SALE</Title>
-                        <Description>SHOP NOW AND SAVE UPTO 30%</Description>
-                        <Button>SHOP</Button>
-                    </InfoContainer>
-                </Slide>
-                <Slide bg="fbf0f4">
-                    <ImageContainer>
-                        <Image src="https://cdn.pixabay.com/photo/2019/09/22/08/15/woman-4495395_960_720.png" />
-                    </ImageContainer>
-                    <InfoContainer>
-                        <Title>SUMMER SALE</Title>
-                        <Description>SHOP NOW AND SAVE UPTO 30%</Description>
-                        <Button>SHOP</Button>
-                    </InfoContainer>
-                </Slide>
+            <Wrapper slideIndex={slideIndex} >
+                {sliderItems.map((item) => (
+                    <Slide bg={item.bg}>
+                        <ImageContainer>
+                            <Image src={item.img} />
+                        </ImageContainer>
+                        <InfoContainer>
+                            <Title>{item.title}</Title>
+                            <Description>{item.desc}</Description>
+                            <Button>SHOP</Button>
+                        </InfoContainer>
+                    </Slide>
+                ))}                
             </Wrapper>
             <Arrow direction="right" onClick={()=>handleClick("right")}>
                 <ArrowRightOutlined/>
